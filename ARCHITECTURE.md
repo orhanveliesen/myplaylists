@@ -94,6 +94,20 @@ sequenceDiagram
     Note over CSV: Auto-fill IDs back to CSV
 ```
 
+## Chord Pipeline
+
+```mermaid
+flowchart TD
+    CSV["playlists/taverna.csv<br/>chords_url column"] --> SCRAPE["chord_scrape.py<br/>nodriver + requests"]
+    SCRAPE --> |kithara.to| NODRIVER["nodriver<br/>Cloudflare bypass"]
+    SCRAPE --> |repertuarim.com| REQUESTS["requests<br/>direct HTTP"]
+    NODRIVER --> RAW["chords/raw/*.txt<br/>extracted page text"]
+    REQUESTS --> RAW
+    RAW --> CONVERT["chord_convert.py<br/>parser + formatter"]
+    CONVERT --> CHORD["chords/*.chord<br/>DSL format"]
+    SPEC["chords/SPEC.md<br/>BNF grammar"] -.-> CHORD
+```
+
 ## Dependencies
 
 | Package | Purpose |
@@ -101,4 +115,7 @@ sequenceDiagram
 | spotipy | Spotify Web API wrapper |
 | ytmusicapi | YouTube Music API wrapper |
 | python-dotenv | Load .env credentials |
+| nodriver | Cloudflare bypass browser automation |
+| beautifulsoup4 | HTML parsing for chord pages |
+| requests | HTTP client for chord sources |
 | pytest | Testing |
